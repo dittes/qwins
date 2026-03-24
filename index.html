@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quick Wins — better, faster.</title>
+  <meta name="description" content="Quick Wins. Better, faster. Coming soon." />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --yellow: #FFF200;
+      --black: #0a0a0a;
+      --grey: #1a1a1a;
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--black);
+      color: var(--yellow);
+      font-family: Arial, Helvetica, sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* ── Noise grain overlay ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.04;
+      pointer-events: none;
+      z-index: 100;
+    }
+
+    /* ── Layout ── */
+    .page {
+      min-height: 100dvh;
+      display: grid;
+      grid-template-rows: 1fr auto;
+      padding: clamp(1.5rem, 6vw, 3rem);
+    }
+
+    .main {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      text-align: center;
+      padding-top: clamp(2rem, 8vw, 5rem);
+    }
+
+    /* ── Logo ── */
+    .logo-wrap {
+      position: relative;
+      width: clamp(100px, 38vw, 180px);
+      margin-bottom: clamp(2rem, 7vw, 3.5rem);
+      animation: floatIn 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    .logo-wrap svg {
+      width: 100%;
+      height: auto;
+      display: block;
+      filter: drop-shadow(0 0 28px rgba(255,242,0,0.35));
+      animation: pulse 4s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { filter: drop-shadow(0 0 20px rgba(255,242,0,0.3)); }
+      50%       { filter: drop-shadow(0 0 44px rgba(255,242,0,0.65)); }
+    }
+
+    /* ── Site name ── */
+    .site-name {
+      font-size: clamp(2.6rem, 13vw, 6.2rem);
+      font-weight: 700;
+      font-style: normal;
+      font-family: Arial, Helvetica, sans-serif;
+      letter-spacing: -0.02em;
+      line-height: 1;
+      color: #ffffff;
+      animation: slideUp 0.9s 0.15s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    /* ── Claim ── */
+    .claim {
+      margin-top: clamp(0.5rem, 2vw, 0.9rem);
+      font-size: clamp(1rem, 4vw, 1.35rem);
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: 400;
+      font-style: italic;
+      letter-spacing: 0.01em;
+      color: var(--yellow);
+      opacity: 0.85;
+      animation: slideUp 0.9s 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    /* ── Divider ── */
+    .divider {
+      width: clamp(40px, 16vw, 80px);
+      height: 2px;
+      background: var(--yellow);
+      margin: clamp(2rem, 7vw, 3rem) auto;
+      animation: expandIn 0.8s 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    /* ── Coming soon badge ── */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6em;
+      border: 1.5px solid rgba(255,242,0,0.35);
+      padding: 0.55em 1.2em;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: clamp(0.7rem, 2.8vw, 0.8rem);
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(255,242,0,0.6);
+      animation: fadeIn 1s 0.6s both;
+    }
+
+    .badge::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: var(--yellow);
+      border-radius: 50%;
+      animation: blink 1.4s ease-in-out infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.2; }
+    }
+
+    /* ── Tagline area ── */
+    .tagline-block {
+      margin-top: clamp(2.5rem, 9vw, 4rem);
+      max-width: 340px;
+      animation: fadeIn 1s 0.75s both;
+    }
+
+    .tagline-block p {
+      font-size: clamp(0.9rem, 3.5vw, 1rem);
+      line-height: 1.7;
+      color: rgba(255,242,0,0.45);
+      font-family: Arial, Helvetica, sans-serif;
+      font-style: italic;
+    }
+
+    /* ── Ribbon ── */
+    .ribbon {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 50;
+      overflow: hidden;
+    }
+
+    .ribbon-band {
+      position: absolute;
+      /* position so it slices diagonally across the viewport */
+      top: 14%;
+      left: -60%;
+      width: 220%;
+      padding: 13px 0;
+      background: var(--yellow);
+      color: var(--black);
+      text-align: center;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: clamp(0.65rem, 2.2vw, 0.85rem);
+      font-weight: 700;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      transform: rotate(-32deg);
+      box-shadow: 0 4px 24px rgba(255,242,0,0.25);
+      animation: ribbonIn 1s 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+      white-space: nowrap;
+      /* repeat the text to fill the band */
+    }
+
+    .ribbon-band::before,
+    .ribbon-band::after {
+      content: 'UNDER CONSTRUCTION · UNDER CONSTRUCTION · UNDER CONSTRUCTION · UNDER CONSTRUCTION · UNDER CONSTRUCTION · ';
+    }
+
+    /* hide the ribbon-band's own text, let pseudo-elements do the work */
+    .ribbon-band { font-size: 0; }
+    .ribbon-band::before,
+    .ribbon-band::after {
+      font-size: clamp(0.65rem, 2.2vw, 0.85rem);
+      display: inline;
+    }
+
+    @keyframes ribbonIn {
+      from { opacity: 0; transform: rotate(-40deg) translateY(-40px); }
+      to   { opacity: 1; transform: rotate(-40deg) translateY(0); }
+    }
+
+    /* ── Footer / Imprint ── */
+    footer {
+      border-top: 1px solid rgba(255,242,0,0.1);
+      padding-top: clamp(1rem, 4vw, 1.5rem);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.35rem;
+      animation: fadeIn 1s 1s both;
+    }
+
+    footer p, footer a {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: clamp(0.6rem, 2.4vw, 0.68rem);
+      color: rgba(255,242,0,0.22);
+      letter-spacing: 0.06em;
+      text-decoration: none;
+      line-height: 1.6;
+      text-align: center;
+    }
+
+    footer a:hover {
+      color: rgba(255,242,0,0.55);
+    }
+
+    .imprint-toggle {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: clamp(0.6rem, 2.4vw, 0.68rem);
+      color: rgba(255,242,0,0.22);
+      letter-spacing: 0.06em;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      padding: 0;
+      margin-bottom: 0.25rem;
+      transition: color 0.2s;
+    }
+
+    .imprint-toggle:hover { color: rgba(255,242,0,0.55); }
+
+    .imprint-details {
+      overflow: hidden;
+      max-height: 0;
+      transition: max-height 0.4s ease;
+    }
+
+    .imprint-details.open {
+      max-height: 120px;
+    }
+
+    /* ── Background geometry ── */
+    .bg-geo {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .bg-geo::after {
+      content: '';
+      position: absolute;
+      bottom: -30vw;
+      right: -20vw;
+      width: 80vw;
+      height: 80vw;
+      border: 1px solid rgba(255,242,0,0.04);
+      border-radius: 50%;
+    }
+
+    .bg-geo::before {
+      content: '';
+      position: absolute;
+      top: -25vw;
+      left: -25vw;
+      width: 70vw;
+      height: 70vw;
+      border: 1px solid rgba(255,242,0,0.04);
+      border-radius: 50%;
+    }
+
+    .page > * { position: relative; z-index: 1; }
+
+    /* ── Keyframes ── */
+    @keyframes floatIn {
+      from { opacity: 0; transform: translateY(-24px) scale(0.92); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes expandIn {
+      from { transform: scaleX(0); opacity: 0; }
+      to   { transform: scaleX(1); opacity: 1; }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="bg-geo"></div>
+
+<!-- Diagonal ribbon -->
+<div class="ribbon" aria-hidden="true">
+  <div class="ribbon-band"></div>
+</div>
+
+<div class="page">
+  <main class="main">
+
+    <!-- Logo -->
+    <div class="logo-wrap">
+      <svg id="svg602" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.w3.org/2000/svg" xml:space="preserve" viewBox="0 0 704.26 590.51" version="1.0"><path id="path634" stroke-linejoin="round" d="m666.48 585.05l-634.18 0.46c-24.787 0.02-35.217-24.94-20.626-49.36l304.68-509.93c17.4-28.298 49.66-28.606 67.06 0.955l308.18 508.52c16.95 24.27 4.62 49.78-25.11 49.35z" fill-rule="evenodd" fill="#000000" stroke="#FFF200" stroke-width="9"/><path id="path609" fill-rule="evenodd" fill="#FFF200" transform="translate(353 309) scale(1.018) translate(-353 -309)" d="m507.62 360.36l89.41 153.81-307.47 2.61-180.25-1.77 150-262.2 90.84-152.05 157.47 259.6z"/><path id="path615" fill="#000000" stroke="#000000" stroke-width="1.8" stroke-linejoin="round" fill-rule="evenodd" d="m331.93 194.79l-76.78 187.8 107.49-36.61-37.8 140.56 80.32-172.45-114.57 35.43 82.68-155.91-41.34 1.18z"/><path id="path617" fill="#000000" stroke="#000000" stroke-width="1.8" stroke-linejoin="round" fill-rule="evenodd" d="m316.57 434.56l9.45 57.88 41.34-48.43-29.53 7.09-21.26-16.54z"/></svg>
+    </div>
+
+    <!-- Headline -->
+    <h1 class="site-name">Quick Wins</h1>
+    <p class="claim">better, faster.</p>
+
+    <div class="divider"></div>
+
+    <!-- Badge -->
+    <div class="badge">Coming Soon</div>
+
+    <!-- Tagline -->
+    <div class="tagline-block">
+      <p>Something is brewing.<br>Check back shortly.</p>
+    </div>
+
+  </main>
+
+  <!-- Footer / Imprint -->
+  <footer>
+    <button class="imprint-toggle" onclick="toggleImprint()" aria-expanded="false" id="imprintBtn">Impressum</button>
+    <div class="imprint-details" id="imprintBox" role="region">
+      <p>Andreas Dittes</p>
+      <p>Bautzener Str. 35 · 10829 Berlin</p>
+      <p><a href="/cdn-cgi/l/email-protection#0e7f7967607d4e6a677a7a6b7d2067606861"><span class="__cf_email__" data-cfemail="f687819f9885b6929f82829385d89f989099">[email&#160;protected]</span></a></p>
+    </div>
+  </footer>
+</div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  function toggleImprint()
